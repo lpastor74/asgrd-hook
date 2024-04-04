@@ -30,20 +30,21 @@ service asgardeo:RegistrationService on webhookListener {
       if(method=="SELF_SIGNUP")
       { 
            string userNameStr  = check __user.eventData.userName;
+           log:printInfo(userNameStr);
            http:Client http_Client = check new (_endUrl, 
              auth = {
                      tokenUrl: _tokenUrl,
                      clientId: _clientId,
                      clientSecret: _clientSecret
              });
-
+             log:printInfo("...sending...");
              anydata|http:ClientError unionResult = check http_Client->/user.post({
                  userName: userNameStr,
                  allowAccess: 0
              });
       }    
     }
-    
+
     remote function onConfirmSelfSignup(asgardeo:GenericEvent event ) returns error? {
       log:printInfo(event.toJsonString());
     }
